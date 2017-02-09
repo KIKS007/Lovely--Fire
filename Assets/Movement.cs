@@ -36,15 +36,13 @@ public class Movement : TrueSyncBehaviour
 
 	void Move ()
 	{
-		TSVector movement = new TSVector (this.transform.forward.x, this.transform.forward.y, this.transform.forward.z);
+		TSVector movement = new TSVector (this.transform.forward.x, 0, this.transform.forward.z);
 
 		rigidBody.velocity = movement * 4;
-
-		//rigidBody.AddForce (movement * MovementSpeed - velocity, ForceMode.Impulse);
 	}
 
 	void Gravity ()
 	{
-		rigidBody.AddForce (TSVector.down * 3, ForceMode.Force);
+		rigidBody.AddForce (TSVector.down * 10, ForceMode.Force);
 	}
 }

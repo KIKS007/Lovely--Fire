@@ -3,42 +3,60 @@ using System.Collections.Generic;
 using UnityEngine;
 using TrueSync;
 
-
 public class BadGuySpawner : TrueSyncBehaviour
 {
+	public float timeBetweenSpawn = 5;
+
 	[SerializeField]
 	GameObject BadGuy;
 
 	[SerializeField]
 	GameObject[] Spawns;
 
+	private int spawnCount = 0;
+
+	public int spawnID = 0;
+
 	bool SpawnGuy = true;
+
 	// Use this for initialization
 	public override void OnSyncedStart ()
 	{
-		StartCoroutine ("SpawnTimer");
+		
 	}
 	
 	// Update is called once per frame
 	public override void OnSyncedUpdate ()
 	{
-		if (SpawnGuy) {
+		if (SpawnGuy) 
+		{
 			SpawnGuy = false;
-			SpawnBadGuy ();
-			StartCoroutine ("SpawnTimer");
+			TrueSyncManager.SyncedStartCoroutine (SpawnTimer ());
 		}
 	}
 
 	public void SpawnBadGuy ()
 	{
-		int spawnID = Random.Range (0, Spawns.Length);
-		GameObject bullet = TrueSyncManager.SyncedInstantiate (BadGuy, Spawns [spawnID].GetComponent <TSTransform> ().position, Spawns [spawnID].GetComponent <TSTransform> ().rotation);
+		TrueSyncManager.SyncedInstantiate (BadGuy, Spawns [spawnID].GetComponent <TSTransform> ().position, TSQuaternion.identity);
 
+		spawnID++;
+
+		if (spawnID > Spawns.Length - 1)
+			spawnID = 0;
 	}
 
 	IEnumerator SpawnTimer ()
 	{
-		yield return new WaitForSeconds (2);
+		SpawnBadGuy ();
+
+		yield return timeBetweenSpawn;
+
+		if(spawnCount >= 5 && timeBetweenSpawn >= 2)
+		{
+			timeBetweenSpawn -= 2;
+			spawnCount = 0;
+		}
+
 		SpawnGuy = true;
 	}
 }
