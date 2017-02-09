@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using TrueSync;
 
-public class Bullet : TrueSyncBehaviour 
+public class Bullet : TrueSyncBehaviour
 {
 	[Header ("Bullet")]
 	public FP bulletSpeed = 2;
+
+	public int Damage = 5;
 
 	private TSRigidBody rigidBody;
 
