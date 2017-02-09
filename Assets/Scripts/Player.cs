@@ -69,8 +69,10 @@ public class Player : TrueSyncBehaviour
 		
 		TSVector velocity = rigidBody.velocity;
 		velocity.y = 0;
-		
-		rigidBody.AddForce (movement * MovementSpeed - velocity, ForceMode.Impulse);
+
+		rigidBody.velocity = movement * MovementSpeed;
+
+		//rigidBody.AddForce (movement * MovementSpeed - velocity, ForceMode.Impulse);
 	}
 
 	TSVector LookAtMouse ()

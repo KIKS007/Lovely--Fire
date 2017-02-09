@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
 using Photon;
+using UnityEngine.UI;
 
 /// <summary>
 /// This script automatically connects to Photon (using the settings file),
@@ -14,6 +15,10 @@ public class JoinRandom : PunBehaviour
 	public string lobbyName = "Lobby";
 	public string levelToLoadPath = "";
 
+	[Header ("UI")]
+	public GameObject shootButton;
+	public GameObject connecting;
+	public Text playersText;
 
 	public virtual void Start()
 	{
@@ -31,11 +36,27 @@ public class JoinRandom : PunBehaviour
 	}
 
 	void OnGUI() {
-		GUI.Label (new Rect(10, 10, 100, 30), "players: " + PhotonNetwork.playerList.Length);
+		//GUI.Label (new Rect(10, 10, 100, 30), "players: " + PhotonNetwork.playerList.Length);
 
-		if (PhotonNetwork.isMasterClient && GUI.Button (new Rect (10, 40, 100, 30), "start")) 
+		playersText.text = PhotonNetwork.playerList.Length.ToString ();
+
+		if (PhotonNetwork.isMasterClient && !shootButton.activeSelf)
+		{
+			shootButton.SetActive (true);
+			connecting.SetActive (false);			
+		}
+	}
+
+	public void Launch ()
+	{
+		if (PhotonNetwork.isMasterClient) 
 		{
 			PhotonNetwork.LoadLevel (levelToLoadPath);
 		}
+	}
+
+	public void Quit ()
+	{
+		Application.Quit ();
 	}
 }
