@@ -24,4 +24,9 @@ public class Bullet : TrueSyncBehaviour
 
 		//rigidBody.AddForce (tsTransform.forward * bulletSpeed - velocity, ForceMode.Impulse);
 	}
+
+	void OnBecameInvisible ()
+	{
+		TrueSyncManager.SyncedDestroy (gameObject);
+	}
 }

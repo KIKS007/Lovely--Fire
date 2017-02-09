@@ -26,8 +26,6 @@ public class Player : TrueSyncBehaviour
 	public override void OnSyncedStart ()
 	{
 		Debug.Log (owner.Id);
-		Debug.Log (localOwner.Id);
-
 		Spawn ();
 
 		rigidBody = GetComponent<TSRigidBody> ();
@@ -35,7 +33,12 @@ public class Player : TrueSyncBehaviour
 
 	void Spawn ()
 	{
-		Transform spawn = GameObject.FindGameObjectWithTag ("PlayersSpawns").transform.GetChild (owner.Id - 1);
+		int ownerId = owner.Id;
+
+		if (ownerId > 0)
+			ownerId = owner.Id - 1;
+
+		Transform spawn = GameObject.FindGameObjectWithTag ("PlayersSpawns").transform.GetChild (ownerId);
 		TSVector position = new TSVector ((FP)spawn.position.x, (FP)spawn.position.y, (FP)spawn.position.z);
 		tsTransform.position = position;
 	}
@@ -46,7 +49,7 @@ public class Player : TrueSyncBehaviour
 
 		TrueSyncInput.SetTSVector (INPUT_MOVE, movement);
 
-		TrueSyncInput.SetInt (INPUT_FIRE, Input.GetButtonDown ("Fire1") ? 1 : 0);
+		TrueSyncInput.SetInt (INPUT_FIRE, Input.GetButton ("Fire1") ? 1 : 0);
 
 		TrueSyncInput.SetTSVector (INPUT_LOOKAT, LookAtMouse ());
 	}
@@ -97,7 +100,9 @@ public class Player : TrueSyncBehaviour
 
 	void Fire ()
 	{
-		StartCoroutine (FireCoolDown ());
+		canFire = false;
+
+		TrueSyncManager.SyncedStartCoroutine (FireCoolDown ());
 		
 		TSVector position = new TSVector (transform.GetChild (0).position.x, transform.GetChild (0).position.y, transform.GetChild (0).position.z);
 		GameObject bullet = TrueSyncManager.SyncedInstantiate (bulletPrefab, position, tsTransform.rotation);
@@ -105,8 +110,6 @@ public class Player : TrueSyncBehaviour
 
 	IEnumerator FireCoolDown ()
 	{
-		canFire = false;
-
 		yield return fireCooldown;
 
 		canFire = true;
