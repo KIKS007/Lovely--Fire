@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TrueSync;
 
-public class Player : TrueSyncBehaviour 
+public class Player : TrueSyncBehaviour
 {
 	[Header ("Movement")]
 	public FP GravityForce = 3;
@@ -26,6 +26,8 @@ public class Player : TrueSyncBehaviour
 	public override void OnSyncedStart ()
 	{
 		Debug.Log (owner.Id);
+		Debug.Log (localOwner.Id);
+		GameManager.Instance.AddPlayerToList (this.gameObject);
 		Spawn ();
 
 		rigidBody = GetComponent<TSRigidBody> ();
@@ -45,7 +47,7 @@ public class Player : TrueSyncBehaviour
 
 	public override void OnSyncedInput ()
 	{
-		TSVector movement = new TSVector ((FP) Input.GetAxis ("Horizontal"), 0, (FP) Input.GetAxis ("Vertical"));
+		TSVector movement = new TSVector ((FP)Input.GetAxis ("Horizontal"), 0, (FP)Input.GetAxis ("Vertical"));
 
 		TrueSyncInput.SetTSVector (INPUT_MOVE, movement);
 
@@ -81,7 +83,7 @@ public class Player : TrueSyncBehaviour
 	TSVector LookAtMouse ()
 	{
 		// Create a ray from the mouse cursor on screen in the direction of the camera.
-		Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+		Ray camRay = Camera.main.ScreenPointToRay (Input.mousePosition);
 
 		// Create a RaycastHit variable to store information about what was hit by the ray.
 		RaycastHit floorHit;
@@ -93,8 +95,7 @@ public class Player : TrueSyncBehaviour
 			playerToMouse.y = 0f;
 
 			return playerToMouse;
-		} 
-		else
+		} else
 			return TSVector.zero;
 	}
 

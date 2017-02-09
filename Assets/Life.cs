@@ -28,7 +28,12 @@ public class Life : TrueSyncBehaviour
 	private void CheckLife ()
 	{
 		if (LifePoint <= 0) {
+			if (this.gameObject.CompareTag ("Player")) {
+
+				GameManager.Instance.Died (this.gameObject);
+			}
 			TrueSyncManager.SyncedDestroy (this.gameObject);
+
 		}
 	}
 
@@ -38,6 +43,11 @@ public class Life : TrueSyncBehaviour
 
 			//Debug.Log ("COLLIDING: " + other.gameObject.name);
 			ChangeLife (false, other.gameObject.GetComponent <Bullet> ().Damage);
+		}
+		if (other.gameObject.CompareTag ("BadGuy") && this.gameObject.CompareTag ("Player")) {
+
+			//Debug.Log ("COLLIDING: " + other.gameObject.name);
+			ChangeLife (false, 5);
 		}
 	}
 
